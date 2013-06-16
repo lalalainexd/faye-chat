@@ -3,7 +3,17 @@ require 'faye'
 
 require './server'
 
-Faye::WebSocket.load_adapter('thin')
+class ServerAuth
+  def incoming(message, callback)
+    if message['channel'] =~ %r{.+public}
+      if message['data']['auth_token'] != "foo"
+        message['error'] = 'STOP CHEATING. NO SHARING ANSWERS'
+      end
+    end
+    callback.call(message)
+  end
+end
 
-use Faye::RackAdapter, mount: '/faye'
+Faye::WebSocket.load_adapter('thin')
+use Faye::RackAdapter, mount: '/faye', extensions: [ServerAuth.new]
 run Sinatra::Application

@@ -29,7 +29,7 @@
 
   $('#chat-submit').on("click",function() {
     client.publish("/messages/public", {
-      username: "frank",
+      username: "student",
       message: $("#message").val()
     });
   });

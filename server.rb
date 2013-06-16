@@ -1,5 +1,9 @@
 require 'sinatra'
 
-get '/' do
-  erb :index
+get '/teacher' do
+  erb :teacher
+end
+
+get '/student' do
+  erb :student
 end

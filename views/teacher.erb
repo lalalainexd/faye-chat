@@ -1,0 +1,49 @@
+<html>
+  <head>
+  </head>
+  <body>
+
+  </body>
+
+<div display="hidden" data-public-token="public_token"> </div>
+<div id="public-messages">
+
+</div>
+<input id="message" type="text" />
+<a id="chat-submit">Chat</a>
+
+<script type="text/javascript" src="/jquery-2.0.2.js">
+</script>
+
+<script type="text/javascript" src="/faye/client.js">
+</script>
+
+<script type="text/javascript">
+  $(function() {
+  client = new Faye.Client('/faye');
+
+  var teacher_token = $("#teacher-token").data("teacher-token");
+  client.subscribe("/messages/public",function(data) {
+    console.log("Got Data");
+    $("#public-messages").append("<b>PUBLIC: " + data.username + "</b>: " + data.message);
+   });
+
+  client.subscribe("/messages/teacher",function(data) {
+    console.log("Got Student Data");
+    $("#public-messages").append("<b>STUDENT: " + data.username + "</b>: " + data.message);
+
+  });
+
+  $('#chat-submit').on("click",function() {
+    client.publish("/messages/public", {
+
+      username: "frank",
+      message: $("#message").val(),
+      auth_token: "foo"
+    });
+  });
+
+  });
+</script>
+
+</html>
